@@ -39,7 +39,7 @@ mysqli_close($connection);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Robi CalcMaster.com</title>
+    <title>Robi CalcMaster.com/buy_credits</title>
     <link rel="icon" href="assets/img/logo.png" type="image/x-icon" />
     <!-- Bootstrap CSS link (assuming your path is correct) -->
     <link
@@ -69,63 +69,25 @@ mysqli_close($connection);
       
        
      
-      <!-- carousel -->
-      <?php include_once 'carousel.php' ?>
-      <!-- end of carousel -->
-       
        
         <div class="pt-2">
           <div class="card p-2">
-            <p class="text-center text-danger fw-bold p-2 fs-6">100 Seconds, 10 questions, BIG PRIZES !</p>
-            <button class="btn w-75 fs-3 fw-bold text-white bg-success mx-auto" style="border: none; border-radius: 8px; padding: 12px 24px; position: relative; overflow: hidden; box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.5); transition: transform 0.2s ease, box-shadow 0.2s ease;">PLAY NOW</button>
+            <p class="text-center text-danger fw-bold p-2" style="font-size: 14px;">You will get 2 credits for 4 Taka, to proceed press Add 2 Credits </p>
+            <button class="btn w-75 fs-3 fw-bold text-white mx-auto" style="background-color: rgb(28, 159, 8);">Add 2 Credits <i class="fa-solid fa-crown circle fs-5 text-dark" style="border: 2px solid yellow; border-radius: 50%; padding: 5px;"></i>
+            </button>
 
 
 
-          
+          <span class="text-center pb-5 fw-bold pt-1" style="font-size: 12px;">Note: Your daily subscription credits will be automatically renewed.</span>
             
 
 
 
 
-            <?php
-            // Set the target end date and time
-            $targetDate = strtotime("2024-07-31 23:59:59");
+            
 
-            // Get the current date and time
-            $currentDate = time();
-
-            // Calculate the remaining time in seconds
-            $remainingTime = $targetDate - $currentDate;
-
-            // Calculate days, hours, minutes, and seconds
-            $days = floor($remainingTime / (60 * 60 * 24));
-            $hours = floor(($remainingTime % (60 * 60 * 24)) / (60 * 60));
-            $minutes = floor(($remainingTime % (60 * 60)) / 60);
-            $seconds = $remainingTime % 60;
-            ?>
-
-            <h6 class="text-center pt-3" style="font-size: 13px;"><i class="fa-solid fa-clock"></i> NEXT DRAW IN:</h6>
-             
-            <div class="d-flex gap-4 mx-auto">
-              <div class="d-flex flex-column">
-                <input type="text" class="text-center rounded-2 p-1 fw-bold fs-4 border-2 border-info shadow" value="<?php echo $days; ?>" style="width:50px" >
-                <label for="">Days</label>
-              </div>
-              <div class="d-flex flex-column">
-                <input type="text" class="text-center rounded-2 p-1 fw-bold fs-4 border-info shadow" value="<?php echo $hours; ?>" style="width:50px">
-                <label for="">Hours</label>
-              </div>
-              <div class="d-flex flex-column">
-                <input type="text" class="text-center rounded-2 p-1 fw-bold fs-4 border-info shadow" value="<?php echo $minutes; ?>" style="width:50px">
-                <label for="">Minutes</label>
-              </div>
-              <div class="d-flex flex-column">
-                <input type="text" class="text-center rounded-2 p-1 fw-bold fs-4 border-info shadow" value="<?php echo $seconds; ?>" style="width:50px">
-                <label for="">Seconds</label>
-              </div>
-             
-              
-            </div>
+           
+          
             
            
            
@@ -133,25 +95,19 @@ mysqli_close($connection);
         </div>
      
 
-        <div class="d-flex gap-2 mt-3">
-         
-          <div class="card p-3 w-50 shadow text-center text-white rounded-3 border-3 border-dark" style="background-color: #3b0168;">
-            <a href="buy_credits.php" class="w-100 text-white" style="text-decoration: none;">
-                <i class="fa-solid fa-cart-plus fs-2"></i>
-               
-                <h6 class="fw-bold">GET 2 CREDITS</h6>
-            </a>
-        </div>
-          <div class="card p-3 w-50 shadow text-center text-white rounded-3 border-3 border-dark" style="background-color: #3b0168;">
-            <a href="" class="w-100 text-white" style="text-decoration: none;">
-                <i class="fa-solid fa-user-plus fs-2"></i>
-                 
-                <h6 class="fw-bold">PLAY FOR FREE</h6>
-            </a>
-        </div>
         
          
+          <div class="card p-2 w-100 rounded-5 mt-3 shadow text-center text-white rounded-3" style="background-color: #741fb5;">
+            <a href="" class="w-100 text-white" style="text-decoration: none;">
+                <i class="fa-solid fa-user-plus fs-2"></i>
+               
+              <span style="" class="fs-5 pb-1 fw-bold">GET FREE 2 CREDITS</span>
+            </a>
         </div>
+           
+        
+         
+       
 
         <div class="text-center text-white mb-2 mt-2">
           <a href="" class="text-white" style="text-decoration: none;">সাম্প্রতিক বিজয়ীরা</a>

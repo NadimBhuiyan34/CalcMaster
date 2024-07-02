@@ -5,37 +5,63 @@ session_start();
 // Assuming $connection is your database connection object
 
 // Validate and sanitize the mobile number
+ 
 if (isset($_POST['login'])) {
   $mobile = isset($_POST['mobile']) ? mysqli_real_escape_string($connection, $_POST['mobile']) : '';
 
   if (!empty($mobile)) {
-    $checkQuery = "SELECT `id`, `mobile` FROM `users` WHERE mobile = '$mobile'";
-    $result = $connection->query($checkQuery);
+      $checkQuery = "SELECT `id`, `mobile`, `status` FROM `users` WHERE mobile = ?";
+      $stmt = $connection->prepare($checkQuery);
+      $stmt->bind_param("s", $mobile);
+      $stmt->execute();
+      $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-      // Fetch user data
-      $userData = $result->fetch_assoc();
+      if ($result->num_rows > 0) {
+          $userData = $result->fetch_assoc();
 
-      // Start a session
-      $_SESSION['user_id'] = $userData['id'];
-      $_SESSION['mobile'] = $userData['mobile'];
+          if ($userData['status'] == 'Verified') {
+              $_SESSION['user_id'] = $userData['id'];
+              $_SESSION['mobile'] = $userData['mobile'];
+              
+              header("Location: dashboard.php");
 
-      // Redirect to a logged-in user page or perform other actions
-      header("Location: dashboard.php");
-      exit();
-    } else {
-      $otp = rand(100000, 999999);
-      $insertQuery = "INSERT INTO `users`(`mobile`, `otp`, `status`) VALUES ('$mobile','$otp','Unverify')";
-      $user = $connection->query($insertQuery);
-      if ($user) {
-        header("Location: index.php?status=" . urlencode($mobile));
-        exit();
+             
+              
+          } else {
+             // Generate a new OTP
+            $newOtp = rand(100000, 999999);
+
+            // Update the OTP in the database
+            $otpUpdateQuery = "UPDATE `users` SET `otp` = ? WHERE id = ?";
+            $otpUpdateStmt = $connection->prepare($otpUpdateQuery);
+            $otpUpdateStmt->bind_param("si", $newOtp, $userData['id']);
+            $otpUpdateStmt->execute();
+            $otpUpdateStmt->close();
+
+            // Redirect to index.php with the new OTP
+            header("Location: index.php?status=" . urlencode($userData['mobile']));
+            exit();
+          }
+      } else {
+          $otp = rand(100000, 999999);
+          $insertQuery = "INSERT INTO `users`(`mobile`, `otp`, `status`) VALUES (?, ?, 'Unverify')";
+          $stmt = $connection->prepare($insertQuery);
+          $stmt->bind_param("ss", $mobile, $otp);
+          $user = $stmt->execute();
+
+          if ($user) {
+              header("Location: index.php?status=" . urlencode($mobile));
+              exit();
+          }
       }
-    }
   } else {
-    echo "Something is wrong.";
+      echo "Mobile number is empty.";
   }
+} else {
+  // Handle the case where 'login' is not set
+  
 }
+
 
 // otp verify
 
@@ -48,19 +74,22 @@ if (isset($_POST['otpBtn'])) {
   $checkQuery = "SELECT * FROM `users` WHERE mobile = '$mobile' AND otp = '$otp'";
   // Assuming you have a database connection stored in $connection
   $result = $connection->query($checkQuery);
-
   if ($result && $result->num_rows > 0) {
-      // OTP is correct, update status in the users table
-      $updateQuery = "UPDATE `users` SET status = 'Verified' WHERE mobile = '$mobile'";
-      $connection->query($updateQuery);
+    // Fetch the data as an associative array
+    $userData = $result->fetch_assoc();
 
-      // Set session variable for login
-      $_SESSION['user_mobile'] = $mobile;
+    // OTP is correct, update status in the users table
+    $updateQuery = "UPDATE `users` SET status = 'Verified' WHERE mobile = '$mobile'";
+    $connection->query($updateQuery);
 
-      // Redirect to the dashboard or any other page after successful login
-      header("Location: dashboard.php");
-      exit();
-  } else {
+    // Set session variables for login
+    $_SESSION['mobile'] = $userData['mobile'];
+    $_SESSION['user_id'] = $userData['id'];
+
+    // Redirect to the dashboard or any other page after successful login
+    header("Location: dashboard.php");
+    exit();
+} else {
       // OTP is incorrect
       echo "Invalid OTP. Please try again.";
   }
@@ -82,58 +111,69 @@ function validateAndSanitize($input) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Robi CalcMaster.com</title>
-  <link rel="icon" href="assets/img/logo.PNG" type="image/x-icon" />
+  <title>GP.100seconds.com</title>
+  <link rel="icon" href="assets/img/logo.png" type="image/x-icon"/>
   <!-- Bootstrap CSS link (assuming your path is correct) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+
+  <style>
+ @keyframes slideInRight {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    50% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.animated-icon-right {
+    animation: slideInRight 1s linear infinite; /* Faster animation */
+}
+
+.animated-icon-left {
+    animation: slideInLeft 1s linear infinite; /* Faster animation */
+}
+
+/* Ensure the input group and button have the same width */
+.form-control {
+    width: calc(100% - 50px); /* Adjust as needed to match the input group's width */
+}
+
+.btn {
+    width: calc(100% - 50px); /* Adjust as needed to match the input group's width */
+}
+
+  </style>
 </head>
 
-<body class="" style="background-color: rgba(0, 74, 247, 0.868)">
+<body class="" style="background-color: rgba(28, 112, 223, 0.868)">
   <div class="mt-2 p-3 mx-auto" style="width: 500px; max-width: 100%;">
-    <div class="d-flex justify-content-between gap-3 ">
-      <div>
-        <img src="https://mango.com.bd/img/partners/robi.png" alt="" class="mx-auto" style="width: 180px; height: 50px" />
-      </div>
-
-      <div>
-        <img src="https://is5-ssl.mzstatic.com/image/thumb/Purple69/v4/33/4f/35/334f357c-54ac-3b26-f315-6d760d695e57/source/512x512bb.jpg" alt="" class="mx-auto" style="width: 50px; height: 50px" />
-      </div>
-
-      <div class="">
-        <div class="dropdown">
-          <button class="btn btn-dark" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-bars"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-            <li><a class="dropdown-item active" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-            <li>
-              <hr class="dropdown-divider" />
-            </li>
-            <li><a class="dropdown-item" href="#">Separated link</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div id="carouselExampleSlidesOnly" class="carousel slide pt-5" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="https://static.vecteezy.com/system/resources/previews/008/477/245/non_2x/realistic-3d-gift-box-cutout-free-png.png" class="d-block mx-auto" alt="Gift Box 1" style="height:120px" />
-        </div>
-        <div class="carousel-item">
-          <img src="https://png.pngtree.com/png-clipart/20211205/original/pngtree-sweet-and-elegant-pink-white-gift-box-png-image_6958963.png" class="d-block mx-auto " alt="Gift Box 2" style="height:120px" />
-        </div>
-        <div class="carousel-item">
-          <img src="https://ants.brilliant.com.bd/media/catalog/product/cache/c5b0e6136a6dd7f7d91d8b889ed40f35/g/i/gift_voucher_update_1x_1_5000.png" class="d-block mx-auto" alt="Gift Box 3" style="height:120px" />
-        </div>
-      </div>
-    </div>
+  <!-- header section -->
+   <?php include_once 'header.php' ?>
+  <!-- end header section -->
+  <!-- carousel section -->
+  <?php include_once 'carousel.php' ?>
+  <!-- end carousel section -->
+  
 
     <h3 class="text-center text-white mt-2">১০টি প্রশ্নের সঠিক উত্তর দিন <br>
       এবং জিতুন!</h3>
-    <hr>
+     
 
     <!-- otp form -->
     <?php
@@ -152,29 +192,29 @@ function validateAndSanitize($input) {
     <?php } else {
     ?>
       <!-- login form -->
-      <form action="index.php" method="POST" class="">
-        <p class="text-center text-white mt-2 fs-6">আপনার ফোন নম্বর লিখুন</p>
+      <form action="index.php" method="POST" class="px-5 text-center">
+        <p class="text-center text-white mt-3" style="font-size: 12px;">আপনার ফোন নম্বর লিখুন</p>
         <div class="input-group mb-3 d-flex justify-content-center w-100">
-          <div class="input-group-prepend shadow">
-            <!-- Bangladesh Flag and Mobile Code -->
-            <span class="input-group-text p-2 rounded-0 rounded-start-4" style="background-color: rgb(195, 213, 229);">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Flag_of_Bangladesh.svg/1200px-Flag_of_Bangladesh.svg.png" alt="BD" style="max-height: 20px; margin-right: 5px;" />
-              +880
-            </span>
-          </div>
-          <!-- Username Input -->
-          <input type="tel" maxlength="10" class="form-control p-2 rounded-end-4" placeholder="" aria-label="Username" aria-describedby="basic-addon1" name="mobile" oninput="validateMobileInput(this)" required>
-
+            <i class="fa-solid fa-angles-right fs-2 pt-1 text-warning animated-icon-right"></i>
+            <div class="input-group-prepend shadow">
+                <!-- Bangladesh Flag and Mobile Code -->
+                <span class="input-group-text p-2 rounded-0 rounded-start-4" style="background-color: rgb(195, 213, 229);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Flag_of_Bangladesh.svg/1200px-Flag_of_Bangladesh.svg.png" alt="BD" style="max-height: 20px; margin-right: 5px;" />
+                    +880
+                </span>
+            </div>
+            <!-- Username Input -->
+            <input type="tel" maxlength="10" class="form-control rounded-end-4" placeholder="" aria-label="Username" aria-describedby="basic-addon1" name="mobile" oninput="validateMobileInput(this)" required>
+            <i class="fa-solid fa-angles-left fs-2 text-warning pt-1 animated-icon-left"></i>
         </div>
-        <button type="submit" class="btn btn-danger rounded-4 w-100 shadow" name="login">সাবস্ক্রাইব / লগ ইন</button>
-
-
-
-
-      </form>
+        <div class="">
+            <button type="submit" class="btn btn-danger rounded-4 shadow text-center" name="login">সাবস্ক্রাইব / লগ ইন</button>
+        </div>
+    </form>
+    
     <?php } ?>
     <p class="text-white text-center mt-3" style="font-size: 12px;">প্রথম 2 দিন বিনামূল্যে তারপর 4 টাকা/দিন</p>
-    <hr>
+    
     <div class="text-center text-white mb-2">
       <a href="" class="text-white" style="text-decoration: none;">সাম্প্রতিক বিজয়ীরা</a>
 
