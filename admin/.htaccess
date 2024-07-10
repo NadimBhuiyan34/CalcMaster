@@ -1,0 +1,5 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /My-Office/Quiz/
+
+RewriteRule ^getdata\.php/([^/]+)/?$ getdata.php?$1 [L]

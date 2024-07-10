@@ -39,7 +39,7 @@ mysqli_close($connection);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Robi CalcMaster.com</title>
+    <title>GP.100seconds.com</title>
     <link rel="icon" href="assets/img/logo.png" type="image/x-icon" />
     <!-- Bootstrap CSS link (assuming your path is correct) -->
     <link
@@ -76,8 +76,17 @@ mysqli_close($connection);
        
         <div class="pt-2">
           <div class="card p-2">
+            <?php if (isset($_GET['message'])){ ?>
+        <p class="text-center <?php echo (strpos($_GET['message'], 'Error') !== false) ? 'text-danger' : 'text-success'; ?> fw-bold p-2" style="font-size: 14px;"><?php echo $_GET['message']; ?></p>
+        <?php } ?>
             <p class="text-center text-danger fw-bold p-2 fs-6">100 Seconds, 10 questions, BIG PRIZES !</p>
-            <button class="btn w-75 fs-3 fw-bold text-white bg-success mx-auto" style="border: none; border-radius: 8px; padding: 12px 24px; position: relative; overflow: hidden; box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.5); transition: transform 0.2s ease, box-shadow 0.2s ease;">PLAY NOW</button>
+            <a href="game.php" class="text-center">
+              <button class="btn w-75 fs-3 fw-bold text-white  shadow-3 rounded-3" style="border-bottom: 5px solid rgba(0, 0, 0, 0.368); background-color: rgb(14, 177, 11);">PLAY NOW</button>
+          </a>
+          
+          
+          
+          
 
 
 

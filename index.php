@@ -6,61 +6,55 @@ session_start();
 
 // Validate and sanitize the mobile number
  
+ 
 if (isset($_POST['login'])) {
-  $mobile = isset($_POST['mobile']) ? mysqli_real_escape_string($connection, $_POST['mobile']) : '';
+    $mobile = isset($_POST['mobile']) ? mysqli_real_escape_string($connection, $_POST['mobile']) : '';
 
-  if (!empty($mobile)) {
-      $checkQuery = "SELECT `id`, `mobile`, `status` FROM `users` WHERE mobile = ?";
-      $stmt = $connection->prepare($checkQuery);
-      $stmt->bind_param("s", $mobile);
-      $stmt->execute();
-      $result = $stmt->get_result();
+    if (!empty($mobile)) {
+        // Check if the mobile number exists
+        $checkQuery = "SELECT `id`, `mobile`, `status` FROM `users` WHERE `mobile` = '$mobile'";
+        $result = $connection->query($checkQuery);
 
-      if ($result->num_rows > 0) {
-          $userData = $result->fetch_assoc();
+        if ($result->num_rows > 0) {
+            $userData = $result->fetch_assoc();
 
-          if ($userData['status'] == 'Verified') {
-              $_SESSION['user_id'] = $userData['id'];
-              $_SESSION['mobile'] = $userData['mobile'];
-              
-              header("Location: dashboard.php");
+            if ($userData['status'] == 'Verified') {
+                $_SESSION['user_id'] = $userData['id'];
+                $_SESSION['mobile'] = $userData['mobile'];
+                header("Location: dashboard.php");
+                exit();
+            } else {
+                // Generate a new OTP
+                $newOtp = rand(100000, 999999);
 
-             
-              
-          } else {
-             // Generate a new OTP
-            $newOtp = rand(100000, 999999);
+                // Update the OTP in the database
+                $otpUpdateQuery = "UPDATE `users` SET `otp` = '$newOtp' WHERE `id` = " . $userData['id'];
+                $connection->query($otpUpdateQuery);
 
-            // Update the OTP in the database
-            $otpUpdateQuery = "UPDATE `users` SET `otp` = ? WHERE id = ?";
-            $otpUpdateStmt = $connection->prepare($otpUpdateQuery);
-            $otpUpdateStmt->bind_param("si", $newOtp, $userData['id']);
-            $otpUpdateStmt->execute();
-            $otpUpdateStmt->close();
+                // Redirect to index.php with the new OTP
+                header("Location: index.php?status=" . urlencode($userData['mobile']));
+                exit();
+            }
+        } else {
+            // Mobile number does not exist, insert new user with OTP
+            $otp = rand(100000, 999999);
+            $insertQuery = "INSERT INTO `users`(`mobile`, `otp`, `status`) VALUES ('$mobile', '$otp', 'Unverify')";
+            $user = $connection->query($insertQuery);
 
-            // Redirect to index.php with the new OTP
-            header("Location: index.php?status=" . urlencode($userData['mobile']));
-            exit();
-          }
-      } else {
-          $otp = rand(100000, 999999);
-          $insertQuery = "INSERT INTO `users`(`mobile`, `otp`, `status`) VALUES (?, ?, 'Unverify')";
-          $stmt = $connection->prepare($insertQuery);
-          $stmt->bind_param("ss", $mobile, $otp);
-          $user = $stmt->execute();
-
-          if ($user) {
-              header("Location: index.php?status=" . urlencode($mobile));
-              exit();
-          }
-      }
-  } else {
-      echo "Mobile number is empty.";
-  }
+            if ($user) {
+                header("Location: index.php?status=" . urlencode($mobile));
+                exit();
+            }
+        }
+    } else {
+        echo "Mobile number is empty.";
+    }
 } else {
-  // Handle the case where 'login' is not set
-  
+    // Handle the case where 'login' is not set
+    
 }
+ 
+
 
 
 // otp verify
@@ -171,8 +165,8 @@ function validateAndSanitize($input) {
   <!-- end carousel section -->
   
 
-    <h3 class="text-center text-white mt-2">১০টি প্রশ্নের সঠিক উত্তর দিন <br>
-      এবং জিতুন!</h3>
+    <h4 class="text-center text-white mt-2 ">১০টি প্রশ্নের সঠিক উত্তর দিন <br>
+      এবং জিতুন!</h4>
      
 
     <!-- otp form -->
@@ -194,7 +188,7 @@ function validateAndSanitize($input) {
       <!-- login form -->
       <form action="index.php" method="POST" class="px-5 text-center">
         <p class="text-center text-white mt-3" style="font-size: 12px;">আপনার ফোন নম্বর লিখুন</p>
-        <div class="input-group mb-3 d-flex justify-content-center w-100">
+        <div class="input-group mb-3 d-flex justify-content-center w-100 mx-auto">
             <i class="fa-solid fa-angles-right fs-2 pt-1 text-warning animated-icon-right"></i>
             <div class="input-group-prepend shadow">
                 <!-- Bangladesh Flag and Mobile Code -->
@@ -208,12 +202,12 @@ function validateAndSanitize($input) {
             <i class="fa-solid fa-angles-left fs-2 text-warning pt-1 animated-icon-left"></i>
         </div>
         <div class="">
-            <button type="submit" class="btn btn-danger rounded-4 shadow text-center" name="login">সাবস্ক্রাইব / লগ ইন</button>
+            <button type="submit" class="btn py-2 fw-bold text-white rounded-4 shadow text-center" name="login" style="border-bottom: 7px solid rgba(0, 0, 0, 0.368); background-color: rgb(14, 177, 11);">সাবস্ক্রাইব / লগ ইন</button>
         </div>
     </form>
     
     <?php } ?>
-    <p class="text-white text-center mt-3" style="font-size: 12px;">প্রথম 2 দিন বিনামূল্যে তারপর 4 টাকা/দিন</p>
+    <p class="text-white text-center mt-3" style="font-size: 12px;"> চার্জ 4 টাকা/দিন</p>
     
     <div class="text-center text-white mb-2">
       <a href="" class="text-white" style="text-decoration: none;">সাম্প্রতিক বিজয়ীরা</a>

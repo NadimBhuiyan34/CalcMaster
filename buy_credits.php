@@ -29,7 +29,60 @@ mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
 
 // Close the database connection
-mysqli_close($connection);
+ 
+ 
+
+// Function to handle form submission for adding credits
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_credits'])) {
+    // Check if user is logged in (you should have session validation logic)
+    if (!isset($_SESSION['user_id'])) {
+        echo "Session expired or unauthorized access.";
+        exit;
+    }
+
+    // Include your database connection script (adjust the path as needed)
+    require 'config.php';
+
+    // Define user ID from session (you should sanitize this input)
+    $userId = $_SESSION['user_id'];
+
+    // Check user's current balance
+    $sqlCheckBalance = "SELECT `balance` FROM `users` WHERE `id` = $userId";
+    $resultBalance = $connection->query($sqlCheckBalance);
+
+    if ($resultBalance->num_rows > 0) {
+        $row = $resultBalance->fetch_assoc();
+        $currentBalance = $row['balance'];
+
+        // Check if balance is above the minimum threshold (e.g., 5.56)
+        $minimumBalance = 5.56;
+        if ($currentBalance < $minimumBalance) {
+            $creditsUpdateMessage = "Insufficient balance. Please add funds.";
+        } else {
+            // Update query to increment credits by 2 and points by 50 (adjust SQL syntax based on your database schema)
+            $sqlCredits = "UPDATE `users` SET `credits` = `credits` + 2, `points` = `points` + 50, `balance` = `balance` - 5.56 WHERE `id` = $userId";
+
+            // Perform the update
+            if ($connection->query($sqlCredits) === TRUE) {
+                $creditsUpdateMessage = "You have been successfully charged with 4 Taka. Click on the PLAY button below to start the game";
+            } else {
+                $creditsUpdateMessage = "Error updating credits: " . $connection->error;
+            }
+        }
+    } else {
+        $creditsUpdateMessage = "Error: User not found.";
+    }
+
+    // Redirect back to buy_credits.php with message
+    header("Location: buy_credits.php?message=" . urlencode($creditsUpdateMessage));
+    exit;
+
+    // Close database connection
+    $connection->close();
+}
+
+
+
 ?>
 
 
@@ -70,30 +123,41 @@ mysqli_close($connection);
        
      
        
-        <div class="pt-2">
-          <div class="card p-2">
-            <p class="text-center text-danger fw-bold p-2" style="font-size: 14px;">You will get 2 credits for 4 Taka, to proceed press Add 2 Credits </p>
-            <button class="btn w-75 fs-3 fw-bold text-white mx-auto" style="background-color: rgb(28, 159, 8);">Add 2 Credits <i class="fa-solid fa-crown circle fs-5 text-dark" style="border: 2px solid yellow; border-radius: 50%; padding: 5px;"></i>
+       
+<div class="pt-2">
+<div class="card p-2">
+    <?php if (isset($_GET['message'])): ?>
+        <p class="text-center <?php echo (strpos($_GET['message'], 'Error') !== false) ? 'text-danger' : 'text-success'; ?> fw-bold p-2" style="font-size: 14px;"><?php echo $_GET['message']; ?></p>
+        
+        <?php if ($_GET['message'] == 'Insufficient balance. Please add funds.'): ?>
+           
+            <form method="post" action="buy_credits.php" class="text-center">
+                <button name="add_credits" class="btn w-75 fs-3 fw-bold text-white mx-auto" style="background-color: rgb(28, 159, 8);">
+                    Add 2 Credits <i class="fa-solid fa-crown circle fs-5 text-dark" style="border: 2px solid yellow; border-radius: 50%; padding: 5px;"></i>
+                </button>
+            </form>
+        <?php else: ?>
+          <a href="game.php" class="text-center">
+                <button name="add_credits" class="btn w-75 fs-3 fw-bold text-white mx-auto" style="background-color: rgb(28, 159, 8);">
+                    Play
+                </button>
+            </a>
+        <?php endif; ?>
+        
+    <?php else: ?>
+        <p class="text-center text-danger fw-bold p-2" style="font-size: 14px;">You will get 2 credits for 4 Taka, to proceed press Add 2 Credits </p>
+        <form method="post" action="buy_credits.php" class="text-center">
+            <button name="add_credits" class="btn w-75 fs-3 fw-bold text-white mx-auto" style="background-color: rgb(28, 159, 8);">
+                Add 2 Credits <i class="fa-solid fa-crown circle fs-5 text-dark" style="border: 2px solid yellow; border-radius: 50%; padding: 5px;"></i>
             </button>
+        </form>
+    <?php endif; ?>
 
+    <span class="text-center pb-5 fw-bold pt-1" style="font-size: 12px;">Note: Your daily subscription credits will be automatically renewed.</span>
+</div>
 
+</div>
 
-          <span class="text-center pb-5 fw-bold pt-1" style="font-size: 12px;">Note: Your daily subscription credits will be automatically renewed.</span>
-            
-
-
-
-
-            
-
-           
-          
-            
-           
-           
-          </div>
-        </div>
-     
 
         
          
