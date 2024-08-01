@@ -72,7 +72,7 @@ mysqli_close($connection);
 
 </head>
 
-<body class="" style="background-color: rgba(28, 112, 223, 0.868)">
+<body class="" style="background-color: rgba(226, 88, 13, 0.868)">
     <div class="mt-2 p-3 mx-auto" style="width: 500px; max-width: 100%;">
 
         <!-- header section -->

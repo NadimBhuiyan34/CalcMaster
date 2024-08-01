@@ -5,11 +5,11 @@
   </div>
 
   <div>
-    <img src="assets/img/logo1.png" alt="" class="pt-1" style="width: 70px; height: 70px" />
+    <img src="../assets/img/logo1.png" alt="" class="pt-1" style="width: 70px; height: 70px" />
   </div>
 
   <div class="">
-    <img src="assets/img/banglalink-seeklogo2.png" alt="" class="pb-3" style="height:90px;width:90px">
+    <img src="../assets/img/banglalink-seeklogo2.png" alt="" class="pb-3" style="height:90px;width:90px">
      
   </div>
 
@@ -21,7 +21,7 @@
     <div class="">
     <div class="">
     <span class="text-white fw-bold" style="font-size: 13px;">+880<?php echo isset($_SESSION['mobile']) ? $_SESSION['mobile'] : '0'; ?></span><br>
-    <span class="badge rounded-pill  text-dark" style="background-color: #fbf9f0;"><?php echo !empty($points) ? $points : '0'; ?> Points | <?php echo !empty($credits) ? $credits : '0'; ?> credits</span>
+    <span class="badge rounded-pill  text-dark" style="background-color: #fbf9f0;">Admin</span>
 </div>
 
     </div>

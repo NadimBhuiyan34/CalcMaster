@@ -107,7 +107,7 @@ if ($userResult->num_rows > 0) {
         }
     </style>
 </head>
-<body style="background-color: rgba(28, 112, 223, 0.868)">
+<body class="" style="background-color: rgba(226, 88, 13, 0.868)">
 
 <div class="mt-2 p-3 mx-auto" style="width: 700px; max-width: 100%;">
     <!-- Include header -->

@@ -10,7 +10,7 @@ if(!$_SESSION['mobile'])
 // point blance and credits handle
 $userId = $_SESSION['user_id'];
 // Use prepared statement to prevent SQL injection
-$pointSql = "SELECT `points`, `credits`, `balance` FROM `users` WHERE id = ?";
+$pointSql = "SELECT `points`, `credits`, `balance`, `draw_date` FROM `users` WHERE id = ?";
 $stmt = mysqli_prepare($connection, $pointSql);
 
 // Bind the parameter
@@ -20,7 +20,7 @@ mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
 
 // Bind the result variables
-mysqli_stmt_bind_result($stmt, $points, $credits, $balance);
+mysqli_stmt_bind_result($stmt, $points, $credits, $balance, $draw_date);
 
 // Fetch the values
 mysqli_stmt_fetch($stmt);
@@ -29,7 +29,7 @@ mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
 
 // Close the database connection
-mysqli_close($connection);
+ 
 ?>
 
 
@@ -59,7 +59,7 @@ mysqli_close($connection);
 
   </head>
 
-  <body class="" style="background-color: rgba(28, 112, 223, 0.868)">
+  <body class="" style="background-color: rgba(226, 88, 13, 0.868)">
     <div class="mt-2 p-3 mx-auto" style="width: 500px; max-width: 100%;">
     
       <!-- header section -->
@@ -98,7 +98,7 @@ mysqli_close($connection);
 
             <?php
             // Set the target end date and time
-            $targetDate = strtotime("2024-07-31 23:59:59");
+            $targetDate = strtotime($draw_date);
 
             // Get the current date and time
             $currentDate = time();
@@ -167,43 +167,51 @@ mysqli_close($connection);
 
         </div>
         <div id="cardCarousel" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <div class="card d-flex align-items-center">
-                <div class="card-body d-flex">
-                  <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg" alt="" style="width:50px;height:50px; margin-right: 10px;">
-                  <p class="mt-3">+880130579583**    <span class="ms-3">5000 TK</span></p>
-                </div>
+      <div class="carousel-inner">
+        <?php
+        $sqlresult = "SELECT * FROM `winers` WHERE status = 'active' ORDER BY id DESC LIMIT 5";
+        $result3 = $connection->query($sqlresult);
+        $isActive = true; // Variable to track the first item
+        while ($row3 = $result3->fetch_assoc()) {
+        ?>
+          <div class="carousel-item <?php echo $isActive ? 'active' : ''; ?>">
+            <div class="card d-flex align-items-center">
+              <div class="card-body d-flex">
+                <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg" alt="" style="width:50px;height:50px; margin-right: 10px;">
+                <p class="mt-3">+880<?php echo htmlspecialchars($row3['mobile']); ?> </p>
               </div>
             </div>
-            <div class="carousel-item">
-              <div class="card d-flex align-items-center">
-                <div class="card-body d-flex">
-                  <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg" alt="" style="width:50px;height:50px; margin-right: 10px;">
-                  <p class="mt-3">+880130579583**    <span class="ms-3">5000 TK</span></p>
-                </div>
-              </div>
-            </div>
-            <!-- Add more carousel items as needed -->
           </div>
-        
-          <!-- Custom Dot Icons as Indicators -->
-          <ol class="carousel-indicators">
-            <li data-bs-target="#cardCarousel" data-bs-slide-to="0" class="active"><i class="fas fa-circle"></i></li>
-            <li data-bs-target="#cardCarousel" data-bs-slide-to="1"><i class="fas fa-circle"></i></li>
-            <!-- Add more indicators as needed -->
-          </ol>
-        
-          <!-- Carousel Controls -->
-          <a class="carousel-control-prev" href="#cardCarousel" role="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#cardCarousel" role="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </a>
-        </div>
+        <?php
+          $isActive = false; // Set to false after the first iteration
+        }
+        ?>
+      </div>
+
+      <!-- Custom Dot Icons as Indicators -->
+      <ol class="carousel-indicators">
+        <?php
+        $result3->data_seek(0); // Reset the result pointer
+        $i = 0;
+        while ($row3 = $result3->fetch_assoc()) {
+        ?>
+          <li data-bs-target="#cardCarousel" data-bs-slide-to="<?php echo $i; ?>" class="<?php echo $i === 0 ? 'active' : ''; ?>"><i class="fas fa-circle"></i></li>
+        <?php
+          $i++;
+        }
+        ?>
+      </ol>
+
+      <!-- Carousel Controls -->
+      <a class="carousel-control-prev" href="#cardCarousel" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#cardCarousel" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </a>
+    </div>
         
         <div class="text-center mt-4">
           <a href="" class="text-center text-white mt-3"> শর্তাবলী
