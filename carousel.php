@@ -24,7 +24,7 @@
             <ul class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton2">
                 <li><a class="dropdown-item fw-bold py-2" href="faq.php" style="font-size: 14px;">জিজ্ঞাসিত প্রশ্নাবলী</a></li>
                 <li><a class="dropdown-item fw-bold py-2" href="winer.php" style="font-size: 14px;">বিজয়ীরা</a></li>
-                <li><a class="dropdown-item fw-bold py-2" href="#" style="font-size: 14px;">কিভাবে শুরু করবেন</a></li>
+                <li><a class="dropdown-item fw-bold py-2" href="how_to_play.php" style="font-size: 14px;">কিভাবে শুরু করবেন</a></li>
                 <li><a class="dropdown-item fw-bold py-2" href="index.php" style="font-size: 14px;">সাইন ইন</a></li>
             </ul>
         </div>

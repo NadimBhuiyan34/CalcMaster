@@ -166,7 +166,7 @@ function validateAndSanitize($input)
 </head>
 
 <body class="" style="background-color: rgba(226, 88, 13, 0.868)">
-  <div class="mt-2 p-3 mx-auto" style="width: 500px; max-width: 100%;">
+  <div class="mt-2 p-3 mx-auto" style="width: 550px; max-width: 100%;">
     <!-- header section -->
     <?php include_once 'header.php' ?>
     <!-- end header section -->
@@ -272,7 +272,7 @@ function validateAndSanitize($input)
 
 
     <div class="text-center mt-4">
-      <a href="" class="text-center text-white mt-3"> শর্তাবলী
+      <a href="terms.php" class="text-center text-white mt-3"> শর্তাবলী
       </a>
     </div>
 

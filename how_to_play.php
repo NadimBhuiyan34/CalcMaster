@@ -18,12 +18,12 @@ session_start();
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GP.100seconds.com/faq</title>
+    <title>GP.100seconds.com/how to play</title>
     <link rel="icon" href="assets/img/logo.png" type="image/x-icon" />
     <!-- Bootstrap CSS link (assuming your path is correct) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
 
-
+ <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body class="" style="background-color: rgba(226, 88, 13, 0.868)">
@@ -39,45 +39,41 @@ session_start();
                     </button>
                     <ul class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton2">
                         <li><a class="dropdown-item fw-bold py-2" href="faq.php" style="font-size: 14px;">জিজ্ঞাসিত প্রশ্নাবলী</a></li>
-                        <li><a class="dropdown-item fw-bold py-2" href="#" style="font-size: 14px;">বিজয়ীরা</a></li>
+                        <li><a class="dropdown-item fw-bold py-2" href="winer.php" style="font-size: 14px;">বিজয়ীরা</a></li>
                         <li><a class="dropdown-item fw-bold py-2" href="how_to_play.php" style="font-size: 14px;">কিভাবে শুরু করবেন</a></li>
                         <li><a class="dropdown-item fw-bold py-2" href="index.php" style="font-size: 14px;">সাইন ইন</a></li>
                     </ul>
                 </div>
             <?php } ?>
         </div>
-
-
-
-
-        
-        <div class="card" style="background-color: rgb(42, 180, 21);">
-            <div class="card-body">
-                
-                <div class="card rounded-4 d-flex">
-                    <?php   
-                     $sqlresult = "SELECT * FROM `winers` WHERE status = 'active' ORDER BY id DESC";
-                     $result3 = $connection->query( $sqlresult);
-                     while ($row3 = $result3->fetch_assoc()) {
-                      ?>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSLU5_eUUGBfxfxRd4IquPiEwLbt4E_6RYMw&s" alt="" class="p-3" style="width:70px;height:70px"> 
-                        </div>
-                         <div class="my-auto">
-                            <span>+880<?php echo $row3['mobile'] ?></span>
-                         </div>
-                        <div class="my-auto px-2">
-                            <p class="pt-3"><?php echo $row3['updated_date'] ?></p>
-                        </div>
-                    </div>
-                   
-                    <?php } ?>
-                </div>
-            </div>
-        </div>
          
 
+        <div class="card" style="font-size:14px; color:rgb(62, 16, 105);font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+            <div class="card-body">
+                <p>১০০ সেকেন্ড সাবস্ক্রিপশন করার পর আপনি ক্রেডিট পাবেন যা দিয়ে গেমটি খেলতে পারবেন।</p>
+            </div>
+        </div>
+        <div class="card" style="font-size:14px; color:rgb(62, 16, 105)">
+            <div class="card-body">
+                <p>প্রতি ক্রেডিট দিয়ে আপনি একটি গেম খেলতে পারবেন যেখানে আপনাকে ১০ সেকেন্ড কম সময়ে ১০ টি প্রশ্নের উত্তর দিতে হবে।</p>
+            </div>
+        </div>
+        <div class="card" style="font-size:14px; color:rgb(62, 16, 105)">
+            <div class="card-body">
+                <p>আপনি যদি একটি গেমের মধ্যে পরপর ১০ টি প্রশ্নের সঠিক উত্তর দেন, তাহলে আপনি একটি তাৎক্ষনিক পুরস্কার জিতবেন। </p>
+            </div>
+        </div>
+        <div class="card" style="font-size:14px; color:rgb(62, 16, 105)">
+            <div class="card-body">
+                <p>এছাড়া প্রতিটি প্রশ্নের উত্তরে, সঠিক বা ভুল যাই হোক না কেন, আপনি পয়েন্ট পাবেন যা আপনাকে ড্র বা মাসিক পুরস্কারে অংশগ্রহনের অধিকারী করে। </p>
+            </div>
+        </div>
+        <div class="card" style="font-size:14px; color:rgb(62, 16, 105)">
+            <div class="card-body">
+                <p>আনসাবস্ক্রাইব করতে, ২১২১৩ নম্বরে STOP 100S পাঠান। </p>
+            </div>
+        </div>
+      
 
 
 

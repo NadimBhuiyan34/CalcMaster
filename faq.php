@@ -27,7 +27,7 @@ session_start();
 </head>
 
 <body class="" style="background-color: rgba(226, 88, 13, 0.868)">
-    <div class="mt-2 p-3 mx-auto" style="width: 500px; max-width: 100%;">
+    <div class="mt-2 p-3 mx-auto" style="width: 550px; max-width: 100%;">
         <!-- header section -->
         <?php include_once 'header.php' ?>
         <div class="text-end mb-2">
@@ -39,8 +39,8 @@ session_start();
                     </button>
                     <ul class="dropdown-menu dropdown-menu-white" aria-labelledby="dropdownMenuButton2">
                         <li><a class="dropdown-item fw-bold py-2" href="faq.php" style="font-size: 14px;">জিজ্ঞাসিত প্রশ্নাবলী</a></li>
-                        <li><a class="dropdown-item fw-bold py-2" href="#" style="font-size: 14px;">বিজয়ীরা</a></li>
-                        <li><a class="dropdown-item fw-bold py-2" href="#" style="font-size: 14px;">কিভাবে শুরু করবেন</a></li>
+                        <li><a class="dropdown-item fw-bold py-2" href="winer.php" style="font-size: 14px;">বিজয়ীরা</a></li>
+                        <li><a class="dropdown-item fw-bold py-2" href="how_to_play.php" style="font-size: 14px;">কিভাবে শুরু করবেন</a></li>
                         <li><a class="dropdown-item fw-bold py-2" href="index.php" style="font-size: 14px;">সাইন ইন</a></li>
                     </ul>
                 </div>
